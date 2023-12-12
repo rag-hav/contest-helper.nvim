@@ -1,18 +1,26 @@
 local M = {}
 
-local makePathSafe = function(inputPath)
-	return string.gsub(inputPath, '[<>:"/\\|?*]', "_")
+local extensionHome = vim.fn.stdpath("data") .. "/contest-helper.nvim"
+
+local function getProblemPath(name)
+	name = string.gsub(name, '[<>:"/\\|?*]', "_")
+	return extensionHome .. "/" .. name
 end
 
-M.getProblemDir = function(name, shouldCreate)
-	name = makePathSafe(name)
-	local dir = vim.fn.stdpath("data") .. "/contest-helper.nvim/" .. name
-	if vim.fn.isdirectory(dir) then
-		return dir
+-- Only returns the name if it actually made the dir
+M.makeProblemDir = function(name)
+	local problemFolder = getProblemPath(name)
+	if vim.fn.isdirectory(problemFolder) ~= 0 then
+		return
 	end
-	if shouldCreate then
-		vim.fn.mkdir(dir, "p")
-		return dir
+	vim.fn.mkdir(problemFolder, "p")
+	return problemFolder
+end
+
+M.getProblemDir = function(name)
+	local problemDir = getProblemPath(name)
+	if vim.fn.isdirectory(problemDir) ~= 0 then
+		return problemDir
 	end
 end
 

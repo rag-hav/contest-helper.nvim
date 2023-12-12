@@ -1,10 +1,11 @@
 local config = require("contest-helper.config")
+local utils = require("contest-helper.utils")
 local display = require("contest-helper.display")
 
 local M = {}
-M.runTestCases = function()
+M.runTestCase = function()
 	local bufferName = vim.fn.expand("%:t")
-	local dir = config.getProblemDir(bufferName, false)
+	local dir = utils.getProblemDir(bufferName)
 
 	if not dir then
 		vim.notify("No Testcases for current file")
@@ -12,7 +13,12 @@ M.runTestCases = function()
 	end
 
 	local bufferType = vim.fn.expand("%:e")
-	local executeCmd = config.buildFunctions[bufferType]()
+	local executeCmdGetter = config.buildFunctions[bufferType]
+	if not executeCmdGetter then
+		vim.notify("No builder defined for filetype " .. bufferType)
+		return
+	end
+	local executeCmd = executeCmdGetter()
 
 	local testCaseNumber = 1
 	local jobIds = {}

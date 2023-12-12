@@ -15,6 +15,16 @@ local config = {
 		end,
 	},
 	timeout = 10000,
+
+    windowOpts = {
+		relative = "editor",
+		width = 30,
+		height = 10,
+		row = 5,
+		col = 5,
+		style = "minimal",
+		border = "single",
+	},
 }
 
 M.get = function(key)
