@@ -11,6 +11,7 @@ M.processParserData = function(data)
         -- vim.notify("Already processed this question")
         return -- Already processed this
     end
+    vim.notify(name)
 
 	for k, v in ipairs(data.tests) do
 		for _, x in ipairs({ { ".in", v.input }, { ".ans", v.output } }) do

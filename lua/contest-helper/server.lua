@@ -39,6 +39,8 @@ M.run = function()
 			end)
 		end)
 
+        vim.notify("Contest helper listening for new problems")
+
 		-- uv.run()
 	end)
 end

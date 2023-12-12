@@ -14,7 +14,7 @@ local config = {
 			return exc
 		end,
 	},
-	timeout = 10000,
+	testCaseTimeout = 10000,
 
     windowOpts = {
 		relative = "editor",
