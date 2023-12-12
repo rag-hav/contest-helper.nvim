@@ -5,9 +5,7 @@ local display = require("contest-helper.display")
 local M = {}
 M.runTestCase = function()
 	local bufferName = vim.fn.expand("%:t:r")
-	vim.notify("buffer name " .. bufferName)
 	local dir = utils.getProblemDir(bufferName)
-	vim.notify("dir name " .. dir)
 
 	if not dir then
 		vim.notify("No Testcases for current file")
@@ -21,6 +19,7 @@ M.runTestCase = function()
 		return
 	end
 	local executeCmd = executeCmdGetter()
+	vim.notify(executeCmd)
 
 	local testCaseNumber = 1
 	local jobIds = {}
@@ -41,32 +40,37 @@ M.runTestCase = function()
 
 		local inFileStream = io.open(inFile, "r")
 		assert(inFileStream, "failed to read input test case file")
-		testCaseInputs[testCaseNumber] = inFileStream:read()
+		testCaseInputs[testCaseNumber] = vim.split(inFileStream:read("*a"), '\n')
 		inFileStream:close()
 
 		local ansFileStream = io.open(ansFile, "r")
 		assert(ansFileStream, "failed to read answer test case file")
-		testCaseAnswers[testCaseNumber] = ansFileStream:read()
+		testCaseAnswers[testCaseNumber] = vim.split(ansFileStream:read("*a"), '\n')
 		ansFileStream:close()
 
 		---@diagnostic disable-next-line: missing-parameter
 		testCaseTimeTaken[testCaseNumber] = vim.fn.reltime() -- store job start time
 
 		local jobid = vim.fn.jobstart(executeCmd, {
-			on_stdout = function(data)
+			on_stdout = function(_, data, _)
 				testCaseOutputs[testCaseNumber] = data
 			end,
-			on_stderr = function(data)
-				testCaseErrors[testCaseNumber] = data
+			on_stderr = function(_, data, _)
+				if #data > 0 and (#data ~= 1 or data[1] ~= "") then
+					testCaseErrors[testCaseNumber] = data
+				end
 			end,
 			on_exit = function()
 				---@diagnostic disable-next-line: missing-parameter
-				testCaseTimeTaken[testCaseNumber] = vim.fn.reltime(testCaseTimeTaken[testCaseNumber]) -- store time taken
+				testCaseTimeTaken[testCaseNumber] = vim.fn.reltimestr(vim.fn.reltime(testCaseTimeTaken[testCaseNumber])) -- store time taken
 			end,
 			stdout_buffered = true,
 			stderr_buffered = true,
 		})
-		assert(jobid > 0, "Invalid job id (see :help jobstart). job-id: " .. jobid)
+		assert(
+			jobid > 0,
+			"Invalid job id (see :help jobstart). job-id: " .. jobid .. "\n Execute Command Used: " .. executeCmd
+		)
 		jobIds[testCaseNumber] = jobid
 
 		vim.fn.chansend(jobid, testCaseInputs[testCaseNumber])

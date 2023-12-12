@@ -4,14 +4,15 @@ local config = {
     autoStart = true,
 
 	getProblemName = function(data)
-		return data.name
-	end,
+		return string.gsub(data.name, '[<>:"/\\|?*\\. ]', "_")
+    end,
 
 	buildFunctions = {
 		["cpp"] = function()
 			local exc = vim.fn.expand("%:r")
+            vim.notify("excecuting make")
 			vim.fn.system("make " .. exc)
-			return exc
+			return vim.fn.expand("%:p:r")
 		end,
 	},
 	testCaseTimeout = 10000,

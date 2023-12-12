@@ -7,6 +7,7 @@ local config = require("contest-helper.config")
 M.processParserData = function(data)
 	local name = config.get('getProblemName')(data)
 	local dir = utils.makeProblemDir(name)
+    vim.notify(name)
     if not dir then
         -- vim.notify("Already processed this question")
         return -- Already processed this

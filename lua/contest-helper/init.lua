@@ -11,6 +11,10 @@ M.createTestCase = function ()
     vim.notify("Run the setup function first")
 end
 
+M.stop = function()
+    server.stop()
+end
+
 M.setup = function(userConfig)
 	config.set(userConfig)
 	server.run()
@@ -18,6 +22,7 @@ M.setup = function(userConfig)
     M.runTestCase = runner.runTestCase
 
 end
+
 
 
 return M
