@@ -7,7 +7,7 @@ M.runTestCase = function()
 	local bufferName = vim.fn.expand("%:t:r")
 	local dir = utils.getProblemDir(bufferName)
 
-	if not dir then
+	if vim.fn.isdirectory(dir) ~= 1 then
 		vim.notify("No Testcases for current file")
 		return
 	end
@@ -19,7 +19,6 @@ M.runTestCase = function()
 		return
 	end
 	local executeCmd = executeCmdGetter()
-	vim.notify(executeCmd)
 
 	local testCaseNumber = 1
 	local jobIds = {}
@@ -40,12 +39,12 @@ M.runTestCase = function()
 
 		local inFileStream = io.open(inFile, "r")
 		assert(inFileStream, "failed to read input test case file")
-		testCaseInputs[testCaseNumber] = vim.split(inFileStream:read("*a"), '\n')
+		testCaseInputs[testCaseNumber] = vim.split(inFileStream:read("*a"), "\n")
 		inFileStream:close()
 
 		local ansFileStream = io.open(ansFile, "r")
 		assert(ansFileStream, "failed to read answer test case file")
-		testCaseAnswers[testCaseNumber] = vim.split(ansFileStream:read("*a"), '\n')
+		testCaseAnswers[testCaseNumber] = vim.split(ansFileStream:read("*a"), "\n")
 		ansFileStream:close()
 
 		---@diagnostic disable-next-line: missing-parameter

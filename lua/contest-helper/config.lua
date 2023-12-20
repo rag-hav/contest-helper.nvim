@@ -1,23 +1,33 @@
 local M = {}
 
 local config = {
-    autoStart = true,
+	autoStart = true,
 
 	getProblemName = function(data)
-		return string.gsub(data.name, '[<>:"/\\|?*\\. ]', "_")
+		return string.gsub(data.name, '[<>:"/\\|?*\\. ]', "_"):gsub("_+", "_")
+	end,
+
+    getProblemFolder = function (data)
+        return "~/cc/misc"
     end,
+
+    getProblemExtension = "cpp",
+
+    createTestCases = true,
+
+    openProblemFile = true,
 
 	buildFunctions = {
 		["cpp"] = function()
 			local exc = vim.fn.expand("%:r")
-            vim.notify("excecuting make")
+			vim.notify("excecuting make")
 			vim.fn.system("make " .. exc)
 			return vim.fn.expand("%:p:r")
 		end,
 	},
 	testCaseTimeout = 10000,
 
-    windowOpts = {
+	windowOpts = {
 		relative = "editor",
 		width = 30,
 		height = 10,
@@ -36,8 +46,8 @@ M.get = function(key)
 end
 
 M.set = function(userConfig)
-    userConfig = userConfig or {}
-    config = vim.tbl_deep_extend("force", config, userConfig)
+	userConfig = userConfig or {}
+	config = vim.tbl_deep_extend("force", config, userConfig)
 end
 
 return M
