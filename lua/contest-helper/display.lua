@@ -1,4 +1,5 @@
 local config = require("contest-helper.config")
+local hg = require("contest-helper.highlights")
 
 local resultBuffernr = -1
 
@@ -26,48 +27,55 @@ local M = {}
 M.displayResults = function(testCaseInputs, testCaseAnswers, testCaseOutputs, testCaseTimeTaken, testCaseErrors)
 	local bufnr = getResultsBuffer()
 
-	local print = function(lines)
-		vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, lines)
+	local print = function(text, hg_name)
+		local start = vim.api.nvim_buf_line_count(bufnr)
+		vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, text)
+		if hg_name then
+			for linenr = start, start + #text - 1 do
+				vim.api.nvim_buf_add_highlight(bufnr, -1, hg_name, linenr, 0, -1)
+			end
+		end
 	end
 
 	local tcnr = #testCaseInputs
+    hg.init()
 
 	for tci = 1, tcnr do
 		print({
 			"***********************",
 			"Test Case: " .. tci,
 			"***********************",
-			"",
-			"Input:",
-		})
+		}, hg.title)
+		print({ "", "Input:" }, hg.subtitle)
 		print(testCaseInputs[tci])
 		print({
 			"",
 			"Output:",
-		})
+		}, hg.subtitle)
 		print(testCaseOutputs[tci])
 		if testCaseErrors[tci] then
 			print({
 				"",
 				"Errors:",
-			})
+			}, hg.subtitle)
 			print(testCaseErrors[tci])
 		end
 		print({
 			"",
 			"",
 			"Expected:",
-		})
+		}, hg.subtitle)
 		print(testCaseAnswers[tci])
 		print({
 			"",
 			"Diff:",
-		})
+		}, hg.subtitle)
 		print({
 			"",
 			"",
-			"Time Taken:" .. testCaseTimeTaken[tci],
-		})
+			"Result:",
+		}, hg.subtitle)
+		print({ "Time Taken " .. testCaseTimeTaken[tci] .. "s" })
 	end
 end
 

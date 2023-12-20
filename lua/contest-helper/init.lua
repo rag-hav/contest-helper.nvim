@@ -1,6 +1,7 @@
 local config = require("contest-helper.config")
 local server = require("contest-helper.server")
 local runner = require("contest-helper.runner")
+local highlights = require("contest-helper.highlights")
 local M = {}
 
 M.runTestCase = function ()

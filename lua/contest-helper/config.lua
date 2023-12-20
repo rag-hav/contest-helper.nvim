@@ -20,7 +20,6 @@ local config = {
 	buildFunctions = {
 		["cpp"] = function()
 			local exc = vim.fn.expand("%:r")
-			vim.notify("excecuting make")
 			vim.fn.system("make " .. exc)
 			return vim.fn.expand("%:p:r")
 		end,

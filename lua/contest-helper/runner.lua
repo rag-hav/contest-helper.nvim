@@ -61,7 +61,7 @@ M.runTestCase = function()
 			end,
 			on_exit = function()
 				---@diagnostic disable-next-line: missing-parameter
-				testCaseTimeTaken[testCaseNumber] = vim.fn.reltimestr(vim.fn.reltime(testCaseTimeTaken[testCaseNumber])) -- store time taken
+				testCaseTimeTaken[testCaseNumber] = vim.fn.split(vim.fn.reltimestr(vim.fn.reltime(testCaseTimeTaken[testCaseNumber])))[1] -- store time taken
 			end,
 			stdout_buffered = true,
 			stderr_buffered = true,
