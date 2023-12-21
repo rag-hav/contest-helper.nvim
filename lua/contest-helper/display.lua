@@ -70,6 +70,20 @@ M.displayResults = function(testCaseInputs, testCaseAnswers, testCaseOutputs, te
 			"",
 			"Diff:",
 		}, hg.subtitle)
+        print(
+            vim.split(
+                vim.diff(
+                    table.concat ( testCaseAnswers[tci], '\n'),
+                    table.concat ( testCaseOutputs[tci], '\n'),
+                    {
+                        algorithm = "myers",
+                        ignore_whitespace = true,
+                    }
+                ) or '',
+                '\n'
+            )
+        )
+
 		print({
 			"",
 			"",

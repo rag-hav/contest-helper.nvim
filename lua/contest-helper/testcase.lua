@@ -4,9 +4,13 @@ local utils = require("contest-helper.utils")
 local config = require("contest-helper.config")
 
 M.processParserData = function(data)
-	local problemDir = config.get("getProblemFolder")(data)
+	local problemDir = config.get("getProblemFolder")
 	local problemName = config.get("getProblemName")(data)
 	local problemExt = config.get("getProblemExtension")
+
+	if type(problemDir) == "function" then
+		problemDir = problemDir(data)
+	end
 	if not problemDir or not problemName or not problemExt then
 		return
 	end
