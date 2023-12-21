@@ -30,7 +30,6 @@ M.init = function()
 	vim.cmd("highlight link " .. M.diffprefix .. " DiffviewStatusLine")
 
 	-- vim.cmd("highlight link " .. M.diffoutput .. " DiffviewStatusBroken")
-    vim.notify("highlight " .. M.diffoutput .. " gui=strikethrough cterm=strikethrough " .. makeHg("DiffviewStatusBroken"))
 	vim.cmd("highlight " .. M.diffoutput .. " gui=strikethrough cterm=strikethrough " .. makeHg("DiffviewStatusBroken"))
 
 	vim.cmd("highlight link " .. M.differror .. " DiffviewStatusUnknown")

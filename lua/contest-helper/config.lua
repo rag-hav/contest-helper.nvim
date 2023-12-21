@@ -1,28 +1,55 @@
 local M = {}
+local utils = require("contest-helper.utils")
 
 local config = {
 	startServerOnStartup = true,
 
 	getProblemName = function(data)
-		return string.gsub(data.name, '[<>:"/\\|?*\\. ]', "_"):gsub("_+", "_")
+		local site = utils.getSiteName(data.url, "misc")
+		local parts = vim.split(data.url, "/")
+        local name = data.name
+
+		if site == "codechef" then
+			name = parts[#parts]:gsub("tabstatement", "")
+		end
+
+		if site == "codeforces" then
+			name = table.concat({ parts[#parts - 2], parts[#parts - 1], parts[#parts] }):gsub("problem", ""):gsub("contest", "")
+		end
+
+		if site == "atcoder" then
+			name = parts[#parts]
+		end
+
+        return utils.cleanName(name)
 	end,
 
-    getProblemFolder = function (data)
-        return "~/cc/misc"
-    end,
+	getProblemFolder = function(data)
+		local site = utils.getSiteName(data.url, "misc")
+		return "~/cc/" .. site
+	end,
 
-    getProblemExtension = "cpp",
+	getProblemExtension = "cpp",
 
-    createTestCases = true,
+	createTestCases = true,
 
-    openProblemFile = true,
+	openProblemFile = true,
 
 	buildFunctions = {
-		["cpp"] = function()
+		cpp = function()
 			local exc = vim.fn.expand("%:r")
 			vim.fn.system("make " .. exc)
 			return vim.fn.expand("%:p:r")
 		end,
+        py = function ()
+            return "python3 " .. vim.fn.expand("%:p")
+        end,
+        java = function ()
+			local exc = vim.fn.expand("%:p")
+			vim.fn.system("javac " .. exc)
+            return "java " .. vim.fn.expand("%:p:r")
+        end
+
 	},
 	testCaseTimeout = 10000,
 

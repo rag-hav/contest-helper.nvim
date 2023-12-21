@@ -36,9 +36,6 @@ M.displayResults = function(testCaseInputs, testCaseAnswers, testCaseOutputs, te
 	local nsid = vim.api.nvim_create_namespace("contest-helper")
 
 	local print = function(text, hg_name, show_virtual_linenr)
-		while #text > 0 and text[#text] == "" do
-			text[#text] = nil
-		end
 		local start = vim.api.nvim_buf_line_count(bufnr)
 		vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, text)
 		if hg_name then
@@ -64,6 +61,11 @@ M.displayResults = function(testCaseInputs, testCaseAnswers, testCaseOutputs, te
 	hg.init()
 	local passed = true
 	for tci = 1, tcnr do
+        testCaseAnswers[tci] = utils.trimBlankLine(testCaseAnswers[tci])
+        testCaseOutputs[tci] = utils.trimBlankLine(testCaseOutputs[tci])
+        testCaseErrors[tci] = utils.trimBlankLine(testCaseErrors[tci])
+        testCaseInputs[tci] = utils.trimBlankLine(testCaseInputs[tci])
+
 		local diff = utils.createDiff(testCaseAnswers[tci], testCaseOutputs[tci])
 		passed = passed and diff.status
 
