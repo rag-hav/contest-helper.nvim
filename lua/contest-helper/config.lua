@@ -1,7 +1,7 @@
 local M = {}
 
 local config = {
-	autoStart = true,
+	startServerOnStartup = true,
 
 	getProblemName = function(data)
 		return string.gsub(data.name, '[<>:"/\\|?*\\. ]', "_"):gsub("_+", "_")
