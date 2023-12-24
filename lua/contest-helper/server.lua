@@ -8,11 +8,13 @@ local server = nil
 
 M.status = "Not running"
 
-local didWork = function(res, err, err_name)
-	if res ~= 0 then
+---@param success 0|nil
+---@param _ string?
+---@param err_msg string?
+local didWork = function(success, _, err_msg)
+	if success ~= 0 then
 		vim.notify(
-			"Contest helper NOT listening for new problems! Some other neovim instance is probably running. "
-				.. err_name
+			"Contest helper NOT listening for new problems! Some other neovim instance is probably running. " .. err_msg
 		)
 		return false
 	end
@@ -35,7 +37,7 @@ M.run = function()
 				assert(client, "Failed to accept connection")
 				server:accept(client)
 				local buffer = {}
-				client:read_start(function(err, chunk)
+				client:read_start(function(_, chunk)
 					if chunk then
 						table.insert(buffer, chunk)
 					else
@@ -46,7 +48,9 @@ M.run = function()
 
 							vim.schedule(function()
 								local result = vim.json.decode(jsontxt)
-								testcase.processParserData(result)
+								if result then
+									testcase.processParserData(result)
+								end
 							end)
 						end
 
@@ -60,8 +64,6 @@ M.run = function()
 		end
 
 		vim.notify("Contest helper listening for new problems")
-
-		-- uv.run()
 	end)
 end
 

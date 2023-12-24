@@ -13,12 +13,13 @@ M.runTestCase = function()
 	end
 
 	local bufferType = vim.fn.expand("%:e")
-	local executeCmdGetter = config.get("buildFunctions")[bufferType]
+	local executeCmdGetter = config.options.buildFunctions[bufferType]
 	if not executeCmdGetter then
 		vim.notify("No builder defined for filetype " .. bufferType)
 		return
 	end
 	local executeCmd = executeCmdGetter()
+    vim.notify(executeCmd)
 
 	local testCaseNumber = 1
 	local jobIds = {}
@@ -52,6 +53,7 @@ M.runTestCase = function()
 
 		local jobid = vim.fn.jobstart(executeCmd, {
 			on_stdout = function(_, data, _)
+                vim.notify(vim.inspect(data))
 				testCaseOutputs[testCaseNumber] = data
 			end,
 			on_stderr = function(_, data, _)
@@ -75,7 +77,7 @@ M.runTestCase = function()
 		vim.fn.chansend(jobid, testCaseInputs[testCaseNumber])
 	until true
 
-	vim.fn.jobwait(jobIds, config.get("testCaseTimeout"))
+	vim.fn.jobwait(jobIds, config.options.testCaseTimeout)
 
 	display.displayResults(testCaseInputs, testCaseAnswers, testCaseOutputs, testCaseTimeTaken, testCaseErrors)
 end

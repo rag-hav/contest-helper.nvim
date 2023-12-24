@@ -1,6 +1,6 @@
-local config = require("contest-helper.config")
 local utils = require("contest-helper.utils")
 local hg = require("contest-helper.highlights")
+local config = require("contest-helper.config")
 
 local resultBuffernr = -1
 
@@ -30,7 +30,7 @@ end
 local M = {}
 M.displayResults = function(testCaseInputs, testCaseAnswers, testCaseOutputs, testCaseTimeTaken, testCaseErrors)
 	local bufnr = getResultsBuffer()
-    vim.api.nvim_buf_set_option(bufnr, 'modifiable', true)
+	vim.api.nvim_buf_set_option(bufnr, "modifiable", true)
 
 	vim.api.nvim_buf_set_lines(bufnr, 1, -1, false, {})
 	local nsid = vim.api.nvim_create_namespace("contest-helper")
@@ -57,14 +57,24 @@ M.displayResults = function(testCaseInputs, testCaseAnswers, testCaseOutputs, te
 		end
 	end
 
+	local trimLineList = function(lines)
+		return utils.trimLineList(
+			lines,
+			config.options.trimPreceedingWhitespaces,
+			config.options.trimFollowingWhitespaces,
+			config.options.trimPrecedingBlankLines,
+			config.options.trimFollowingBlankLines
+		)
+	end
+
 	local tcnr = #testCaseInputs
 	hg.init()
 	local passed = true
 	for tci = 1, tcnr do
-        testCaseAnswers[tci] = utils.trimBlankLine(testCaseAnswers[tci])
-        testCaseOutputs[tci] = utils.trimBlankLine(testCaseOutputs[tci])
-        testCaseErrors[tci] = utils.trimBlankLine(testCaseErrors[tci])
-        testCaseInputs[tci] = utils.trimBlankLine(testCaseInputs[tci])
+		testCaseAnswers[tci] = trimLineList(testCaseAnswers[tci])
+		testCaseOutputs[tci] = trimLineList(testCaseOutputs[tci])
+		testCaseErrors[tci] = trimLineList(testCaseErrors[tci])
+		testCaseInputs[tci] = trimLineList(testCaseInputs[tci])
 
 		local diff = utils.createDiff(testCaseAnswers[tci], testCaseOutputs[tci])
 		passed = passed and diff.status
@@ -110,7 +120,7 @@ M.displayResults = function(testCaseInputs, testCaseAnswers, testCaseOutputs, te
 				-- vim.api.nvim_buf_set_extmark()
 				for _, d in ipairs(diff.differences) do
 					local linenr = vim.api.nvim_buf_line_count(bufnr)
-					vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, { table.concat({ d.output, d.answer }, "") })
+					vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, { d.output .. d.answer })
 
 					vim.api.nvim_buf_add_highlight(bufnr, nsid, hg.diffoutput, linenr, 0, #d.output)
 					vim.api.nvim_buf_add_highlight(bufnr, nsid, hg.diffanswer, linenr, #d.output, -1)
@@ -119,7 +129,7 @@ M.displayResults = function(testCaseInputs, testCaseAnswers, testCaseOutputs, te
 						nsid,
 						linenr,
 						0,
-						{ virt_text = { { tostring(d.i) , "LineNr"} }, virt_text_pos = "right_align" }
+						{ virt_text = { { tostring(d.i), hg.linenr } }, virt_text_pos = "right_align" }
 					)
 				end
 			end
@@ -139,7 +149,7 @@ M.displayResults = function(testCaseInputs, testCaseAnswers, testCaseOutputs, te
 		print({ "", "", "Sample Test Cases Failed" }, hg.resultbad)
 	end
 
-    vim.api.nvim_buf_set_option(0, 'modifiable', false)
+	vim.api.nvim_buf_set_option(0, "modifiable", false)
 end
 
 return M

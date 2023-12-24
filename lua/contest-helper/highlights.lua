@@ -10,7 +10,10 @@ M.testcasegood = "ContestHelperTestCaseGood"
 M.testcasebad = "ContestHelperTestCaseBad"
 M.resultgood = "ContestHelperResultGood"
 M.resultbad = "ContestHelperResultBad"
+M.linenr = "ContestHelperLineNr"
 
+---@param source string 
+---@return string
 local makeHg = function(source)
 	local hlid = vim.fn.hlID(source)
 	local getAttr = function(mode, name)
@@ -35,6 +38,7 @@ M.init = function()
 	vim.cmd("highlight link " .. M.differror .. " DiffviewStatusUnknown")
 	vim.cmd("highlight link " .. M.testcasegood .. " DiagnosticOk")
 	vim.cmd("highlight link " .. M.testcasebad .. " DiagnosticError")
+	vim.cmd("highlight line " .. M.ContestHelperLineNr .. " LineNr" )
 
 	vim.cmd("highlight " .. M.resultgood .. " gui=bold cterm=bold " .. makeHg("DiagnosticOk"))
 	vim.cmd("highlight " .. M.resultbad .. " gui=bold cterm=bold " .. makeHg("DiagnosticError"))

@@ -1,27 +1,37 @@
-local M = {}
 local utils = require("contest-helper.utils")
 
-local config = {
+local M = {}
+
+---@type Config
+M.defaults = {
 	startServerOnStartup = true,
+
+	trimPreceedingWhitespaces = false,
+	trimPrecedingBlankLines = false,
+
+	trimFollowingWhitespaces = true,
+	trimFollowingBlankLines = true,
 
 	getProblemName = function(data)
 		local site = utils.getSiteName(data.url, "misc")
 		local parts = vim.split(data.url, "/")
-        local name = data.name
+		local name = data.name
 
 		if site == "codechef" then
 			name = parts[#parts]:gsub("tabstatement", "")
 		end
 
 		if site == "codeforces" then
-			name = table.concat({ parts[#parts - 2], parts[#parts - 1], parts[#parts] }):gsub("problem", ""):gsub("contest", "")
+			name = table.concat({ parts[#parts - 2], parts[#parts - 1], parts[#parts] })
+				:gsub("problem", "")
+				:gsub("contest", "")
 		end
 
 		if site == "atcoder" then
 			name = parts[#parts]
 		end
 
-        return utils.cleanName(name)
+		return utils.cleanName(name)
 	end,
 
 	getProblemFolder = function(data)
@@ -41,39 +51,26 @@ local config = {
 			vim.fn.system("make " .. exc)
 			return vim.fn.expand("%:p:r")
 		end,
-        py = function ()
-            return "python3 " .. vim.fn.expand("%:p")
-        end,
-        java = function ()
+		py = function()
+			return "python3 " .. vim.fn.expand("%:p")
+		end,
+		java = function()
 			local exc = vim.fn.expand("%:p")
 			vim.fn.system("javac " .. exc)
-            return "java " .. vim.fn.expand("%:p:r")
-        end
-
+			return "java " .. vim.fn.expand("%:p:r")
+		end,
 	},
 	testCaseTimeout = 10000,
-
-	windowOpts = {
-		relative = "editor",
-		width = 30,
-		height = 10,
-		row = 5,
-		col = 5,
-		style = "minimal",
-		border = "single",
-	},
 }
 
-M.get = function(key)
-	if key then
-		return config[key]
-	end
-	return config
-end
 
-M.set = function(userConfig)
-	userConfig = userConfig or {}
-	config = vim.tbl_deep_extend("force", config, userConfig)
+---@type Config
+---@diagnostic disable-next-line: missing-fields
+M.options = {}
+
+---@param opts? Config
+M.setup = function(opts)
+	M.options = vim.tbl_deep_extend("force", M.defaults, opts or {})
 end
 
 return M
