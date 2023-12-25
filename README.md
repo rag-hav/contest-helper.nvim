@@ -11,7 +11,7 @@ This Neovim plugin is meant to be used with [Competitive Companion Extension](ht
 
 You can use Lazy to install the plugin-
 
-```
+```lua
 {
     "rag-hav/contest-helper.nvim",
     config = function()
@@ -25,7 +25,7 @@ You can use Lazy to install the plugin-
 
 The plugin has following configuration options-
 
-```
+```lua
 local getSiteName = function(url, fallback)
     for _, site in ipairs({ "codeforces", "codechef", "atcoder", "hackerearth", "hackerrank", "spoj", "cses" }) do
         if string.find(url, site) then
@@ -133,7 +133,7 @@ The plugin exposes following methods and commands
 It is recommended to use 'startServerOnStartup' option and create a keybinding for running test cases.
 
 Ex-
-```
+```lua
 vim.api.nvim_set_keymap("n", "<C-r>", "<cmd>w<cr><cmd>ContestHelperRunCode<cr>", {})
 ```
 
