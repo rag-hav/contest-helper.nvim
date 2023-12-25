@@ -5,7 +5,7 @@ local extensionHome = vim.fn.stdpath("data") .. "/contest-helper.nvim"
 ---@param name string
 ---@return string
 M.getProblemDir = function(name)
-	name = M.cleanName(name)
+	name = string.gsub(name, "\\W", "")
 	return extensionHome .. "/" .. name
 end
 
@@ -19,14 +19,6 @@ M.getSiteName = function(url, fallback)
 		end
 	end
 	return fallback
-end
-
----@param name string
----@return string
-M.cleanName = function(name)
-	-- return string.gsub(name, '[<>:"/\\|?*\\. ]', "_"):gsub("_+", "_")
-	local res = string.gsub(name, "\\W", "")
-	return res
 end
 
 ---@param line string

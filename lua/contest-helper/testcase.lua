@@ -6,7 +6,7 @@ local config = require("contest-helper.config")
 ---@param problemDir string The folder to create the problem file in
 ---@param problemName string The name of the problem file
 ---@param problemExt string The extension of the problem file
----@param tests ExtensionDataTestCase[] List of test cases
+---@param tests CCDataTestCase[] List of test cases
 local _processParserData = function(problemDir, problemName, problemExt, tests)
 	assert(type(problemDir) == "string", "Invalid problem folder")
 	assert(type(problemName) == "string", "Invalid problem name")
@@ -15,7 +15,6 @@ local _processParserData = function(problemDir, problemName, problemExt, tests)
 	local problemPath = problemDir .. problemName .. "." .. problemExt
 
 	if config.options.openProblemFile then
-        vim.notify("Opening " .. problemPath)
 		vim.cmd("edit " .. problemPath)
 	end
 
@@ -41,7 +40,7 @@ local _processParserData = function(problemDir, problemName, problemExt, tests)
 	end
 end
 
----@param data ExtensionData
+---@param data CCData
 M.processParserData = function(data)
 	local problemDir = config.options.getProblemFolder
 	local problemName = config.options.getProblemName(data)

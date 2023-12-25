@@ -3,27 +3,15 @@ local server = require("contest-helper.server")
 local runner = require("contest-helper.runner")
 local M = {}
 
-local noSetup = function()
-	vim.notify("Run the setup function first")
-end
+M.runCode = runner.runTestCase
+M.startServer = server.start
+M.stopServer = server.stop
 
-M.runTestCase = noSetup
-
-M.createTestCase = noSetup
-
-M.stop = noSetup
-
-M.runServer = noSetup
-
-M.setup = function(userConfig)
-	config.setup(userConfig)
+M.setup = function(opts)
+	config.setup(opts)
 	if config.options.startServerOnStartup then
-		server.run()
+		server.start()
 	end
-
-	M.runTestCase = runner.runTestCase
-	M.runServer = server.run
-	M.stopServer = server.stop
 end
 
 return M

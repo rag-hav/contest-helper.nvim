@@ -38,7 +38,7 @@ M.init = function()
 	vim.cmd("highlight link " .. M.differror .. " DiffviewStatusUnknown")
 	vim.cmd("highlight link " .. M.testcasegood .. " DiagnosticOk")
 	vim.cmd("highlight link " .. M.testcasebad .. " DiagnosticError")
-	vim.cmd("highlight line " .. M.ContestHelperLineNr .. " LineNr" )
+	vim.cmd("highlight link " .. M.linenr .. " LineNr" )
 
 	vim.cmd("highlight " .. M.resultgood .. " gui=bold cterm=bold " .. makeHg("DiagnosticOk"))
 	vim.cmd("highlight " .. M.resultbad .. " gui=bold cterm=bold " .. makeHg("DiagnosticError"))

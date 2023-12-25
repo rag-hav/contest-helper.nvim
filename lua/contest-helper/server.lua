@@ -21,7 +21,7 @@ local didWork = function(success, _, err_msg)
 	return true
 end
 
-M.run = function()
+M.start = function()
 	vim.schedule(function()
 		server = uv.new_tcp()
 		assert(server, "Failed to create server")

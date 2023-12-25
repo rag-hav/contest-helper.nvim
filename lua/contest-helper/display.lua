@@ -60,7 +60,7 @@ M.displayResults = function(testCaseInputs, testCaseAnswers, testCaseOutputs, te
 	local trimLineList = function(lines)
 		return utils.trimLineList(
 			lines,
-			config.options.trimPreceedingWhitespaces,
+			config.options.trimPrecedingWhitespaces,
 			config.options.trimFollowingWhitespaces,
 			config.options.trimPrecedingBlankLines,
 			config.options.trimFollowingBlankLines
@@ -73,7 +73,7 @@ M.displayResults = function(testCaseInputs, testCaseAnswers, testCaseOutputs, te
 	for tci = 1, tcnr do
 		testCaseAnswers[tci] = trimLineList(testCaseAnswers[tci])
 		testCaseOutputs[tci] = trimLineList(testCaseOutputs[tci])
-		testCaseErrors[tci] = trimLineList(testCaseErrors[tci])
+		testCaseErrors[tci] = trimLineList(testCaseErrors[tci] or {})
 		testCaseInputs[tci] = trimLineList(testCaseInputs[tci])
 
 		local diff = utils.createDiff(testCaseAnswers[tci], testCaseOutputs[tci])

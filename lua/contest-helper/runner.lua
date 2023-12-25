@@ -19,7 +19,6 @@ M.runTestCase = function()
 		return
 	end
 	local executeCmd = executeCmdGetter()
-    vim.notify(executeCmd)
 
 	local testCaseNumber = 1
 	local jobIds = {}
@@ -53,7 +52,6 @@ M.runTestCase = function()
 
 		local jobid = vim.fn.jobstart(executeCmd, {
 			on_stdout = function(_, data, _)
-                vim.notify(vim.inspect(data))
 				testCaseOutputs[testCaseNumber] = data
 			end,
 			on_stderr = function(_, data, _)
