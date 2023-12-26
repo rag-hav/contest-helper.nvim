@@ -4,9 +4,11 @@ local config = require("contest-helper.config")
 
 local resultBuffernr = -1
 
+---@return integer
 local getResultsBuffer = function()
 	-- vim.notify(vim.inspect( vim.api.nvim_buf_is_valid(resultBuffernr)) )
 	if not vim.api.nvim_buf_is_valid(resultBuffernr) then
+        hg.init()
 		resultBuffernr = vim.api.nvim_create_buf(false, true)
 	end
 
@@ -19,7 +21,7 @@ local getResultsBuffer = function()
 		assert(resultBuffernr, "Failed to create buffer")
 
 		vim.api.nvim_win_set_buf(new_win, resultBuffernr)
-		vim.api.nvim_buf_set_name(resultBuffernr, "runresult")
+		vim.api.nvim_buf_set_option(resultBuffernr, "filetype", "runresult")
 		vim.cmd("setlocal nornu")
 		vim.cmd("setlocal nonu")
 	end
@@ -28,13 +30,28 @@ local getResultsBuffer = function()
 end
 
 local M = {}
-M.displayResults = function(testCaseInputs, testCaseAnswers, testCaseOutputs, testCaseTimeTaken, testCaseErrors)
+
+M.clearResults = function()
+	if vim.api.nvim_buf_is_valid(resultBuffernr) then
+		vim.api.nvim_buf_set_option(resultBuffernr, "modifiable", true)
+		vim.api.nvim_buf_set_lines(resultBuffernr, 1, -1, false, {})
+		vim.api.nvim_buf_set_option(resultBuffernr, "modifiable", false)
+	end
+end
+
+---@param testCaseInputs string[][]
+---@param testCaseAnswers string[][]
+---@param testCaseOutputs string[][]
+---@param testCaseErrors string[][]
+---@param testCaseTimeTaken string[]
+M.displayResults = function(testCaseInputs, testCaseAnswers, testCaseOutputs, testCaseErrors, testCaseTimeTaken)
 	local bufnr = getResultsBuffer()
 	vim.api.nvim_buf_set_option(bufnr, "modifiable", true)
-
-	vim.api.nvim_buf_set_lines(bufnr, 1, -1, false, {})
 	local nsid = vim.api.nvim_create_namespace("contest-helper")
 
+	---@param text string[]
+	---@param hg_name? string
+	---@param show_virtual_linenr? boolean
 	local print = function(text, hg_name, show_virtual_linenr)
 		local start = vim.api.nvim_buf_line_count(bufnr)
 		vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, text)
@@ -51,12 +68,14 @@ M.displayResults = function(testCaseInputs, testCaseAnswers, testCaseOutputs, te
 					nsid,
 					linenr,
 					0,
-					{ virt_text = { { tostring(i), "LineNr" } }, virt_text_pos = "right_align" }
+					{ virt_text = { { tostring(i), hg.linenr } }, virt_text_pos = "right_align" }
 				)
 			end
 		end
 	end
 
+	---@param lines string[]
+	---@return string[]
 	local trimLineList = function(lines)
 		return utils.trimLineList(
 			lines,
@@ -68,7 +87,6 @@ M.displayResults = function(testCaseInputs, testCaseAnswers, testCaseOutputs, te
 	end
 
 	local tcnr = #testCaseInputs
-	hg.init()
 	local passed = true
 	for tci = 1, tcnr do
 		testCaseAnswers[tci] = trimLineList(testCaseAnswers[tci])
@@ -92,7 +110,7 @@ M.displayResults = function(testCaseInputs, testCaseAnswers, testCaseOutputs, te
 			"Output:",
 		}, hg.subtitle)
 		print(testCaseOutputs[tci], nil, true)
-		if testCaseErrors[tci] then
+		if #testCaseErrors[tci] > 0 then
 			print({
 				"",
 				"",
@@ -149,7 +167,7 @@ M.displayResults = function(testCaseInputs, testCaseAnswers, testCaseOutputs, te
 		print({ "", "", "Sample Test Cases Failed" }, hg.resultbad)
 	end
 
-	vim.api.nvim_buf_set_option(0, "modifiable", false)
+	vim.api.nvim_buf_set_option(bufnr, "modifiable", false)
 end
 
 return M

@@ -4,8 +4,8 @@ local display = require("contest-helper.display")
 
 local M = {}
 M.runTestCase = function()
-	local bufferName = vim.fn.expand("%:t:r")
-	local dir = utils.getProblemDir(bufferName)
+	local problemName = vim.fn.expand("%:t:r")
+	local dir = utils.getProblemDir(problemName)
 
 	if vim.fn.isdirectory(dir) ~= 1 then
 		vim.notify("No Testcases for current file")
@@ -18,6 +18,8 @@ M.runTestCase = function()
 		vim.notify("No builder defined for filetype " .. bufferType)
 		return
 	end
+
+    display.clearResults()
 	local executeCmd = executeCmdGetter()
 
 	local testCaseNumber = 1
@@ -77,7 +79,7 @@ M.runTestCase = function()
 
 	vim.fn.jobwait(jobIds, config.options.testCaseTimeout)
 
-	display.displayResults(testCaseInputs, testCaseAnswers, testCaseOutputs, testCaseTimeTaken, testCaseErrors)
+	display.displayResults(testCaseInputs, testCaseAnswers, testCaseOutputs, testCaseErrors, testCaseTimeTaken)
 end
 
 return M
