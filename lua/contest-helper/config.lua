@@ -39,6 +39,10 @@ M.defaults = {
 	-- These are stored in 'data' stdpath (see :help stdpath)
 	createTestCases = true,
 
+    -- Wether the cursor should move to the first failed test case or stay in problem file 
+    -- after running test cases
+    seekToFailedTestCase = true,
+
 	openProblemFile = true, -- Wether to open the problem file
 
 	-- A table (dictionary) of extension and their corresponding build function

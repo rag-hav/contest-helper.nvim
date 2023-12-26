@@ -64,6 +64,7 @@
 ---@field trimFollowingWhitespaces boolean
 ---@field trimPrecedingBlankLines boolean
 ---@field trimPrecedingWhitespaces boolean
+---@field seekToFailedTestCase boolean
 
 ---@class DiffResult
 ---@field status boolean
