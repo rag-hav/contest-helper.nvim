@@ -55,9 +55,10 @@
 ---@field buildFunctions table<string, fun() : string>
 ---@field createTestCases boolean
 ---@field getProblemExtension string|string[]|fun(ExtensionData): string
----@field getProblemTemplate? template|table<string, fun() : template>
+---@field getProblemTemplate? SolutionTemplate|table<string, fun() : SolutionTemplate>
 ---@field getProblemFolder string|fun(ExtensionData): string
 ---@field getProblemName fun(ExtensionData): string
+---@field postRunHook? fun(boolean, RunResult): string[], string
 ---@field openProblemFile boolean
 ---@field startServerOnStartup boolean
 ---@field testCaseTimeout integer
@@ -67,7 +68,8 @@
 ---@field trimPrecedingWhitespaces boolean
 ---@field seekToFailedTestCase boolean
 
----@alias template string|string[]
+---@alias SolutionTemplate string|string[]
+---@alias RunResult integer[]
 
 ---@class DiffResult
 ---@field status boolean

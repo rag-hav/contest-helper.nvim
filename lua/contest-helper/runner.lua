@@ -77,9 +77,10 @@ M.runTestCase = function()
 		vim.fn.chansend(jobid, testCaseInputs[testCaseNumber])
 	until true
 
-	vim.fn.jobwait(jobIds, config.options.testCaseTimeout)
+	local exitCodes = vim.fn.jobwait(jobIds, config.options.testCaseTimeout)
 
-	display.displayResults(testCaseInputs, testCaseAnswers, testCaseOutputs, testCaseErrors, testCaseTimeTaken)
+---@diagnostic disable-next-line: param-type-mismatch
+	display.displayResults(testCaseInputs, testCaseAnswers, testCaseOutputs, testCaseErrors, testCaseTimeTaken, exitCodes)
 end
 
 return M

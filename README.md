@@ -91,11 +91,21 @@ require("contest-helper").setup({
     -- getProblemExtension = function(data) return "cpp" end
     getProblemExtension = "cpp",
 
-    -- (optional) Initial content of the solution file to the problem
+    -- (optional) 
+    -- Initial content of the solution file to the problem
     -- Can be string like "~/template.cpp" (interpreted as a file path from which to copy content) or a
     -- list of string like {"#include <bits/stdc++.h>", "using namespace std;", "int main() {", "}"}
     -- Can also be a function returning either
     -- getProblemTemplate = "~/template.cpp",
+
+    -- (optional)
+    -- function to execute after RunTestCase, this is done while focus is still in problem solution file
+    -- Receives two arguments
+    -- 1. A boolean status, true if all test cases passed
+    -- 2. A list of integer wheres the i_th integer is the result of the i_th test case 
+    --    each integer is either 0 (Wrong answer), 1 (correct), -1(time limit exceeded)
+    -- You can optionally return a list of lines to display at end of results and a optional highlight group
+    -- postRunHook = function(allPassed, statuses) return {allPassed and "All passed" or "Failed"}, "Title" end
 
     -- Wether to store the test cases received from competitive-companion
     -- These are stored in 'data' stdpath (see :help stdpath)
