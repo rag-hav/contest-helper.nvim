@@ -12,10 +12,23 @@ local _processParserData = function(problemDir, problemName, problemExt, tests)
 	assert(type(problemName) == "string", "Invalid problem name")
 	assert(type(problemExt) == "string", "Invalid problem extension")
 
-	local problemPath = problemDir .. problemName .. "." .. problemExt
-
 	if config.options.openProblemFile then
+		local problemPath = vim.fn.expand(problemDir .. problemName .. "." .. problemExt)
 		vim.cmd("edit " .. problemPath)
+
+		local template = config.options.getProblemTemplate
+		if vim.fn.filereadable(problemPath) == 0 and template then
+			if type(template) == "function" then
+				template = template()
+			end
+
+            if type(template) == "string" then
+                template = vim.fn.expand(template)
+                template = vim.fn.readfile(template)
+            end
+
+            vim.api.nvim_buf_set_lines(0, 0, -1, false, template)
+		end
 	end
 
 	if config.options.createTestCases then

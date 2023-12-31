@@ -55,6 +55,7 @@
 ---@field buildFunctions table<string, fun() : string>
 ---@field createTestCases boolean
 ---@field getProblemExtension string|string[]|fun(ExtensionData): string
+---@field getProblemTemplate? template|table<string, fun() : template>
 ---@field getProblemFolder string|fun(ExtensionData): string
 ---@field getProblemName fun(ExtensionData): string
 ---@field openProblemFile boolean
@@ -65,6 +66,8 @@
 ---@field trimPrecedingBlankLines boolean
 ---@field trimPrecedingWhitespaces boolean
 ---@field seekToFailedTestCase boolean
+
+---@alias template string|string[]
 
 ---@class DiffResult
 ---@field status boolean

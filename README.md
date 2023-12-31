@@ -83,12 +83,19 @@ require("contest-helper").setup({
         local site = getSiteName(data.url, "misc")
         return "~/cc/" .. site
     end,
+
     -- Extension of the solution file to the problem
     -- Can be a function taking CCData and returning string, a string, or a list of strings
     -- if it is a list of string then a selector will open to select an extension from that list
     -- getProblemExtension = {"cpp", "py", "java"},
     -- getProblemExtension = function(data) return "cpp" end
     getProblemExtension = "cpp",
+
+    -- (optional) Initial content of the solution file to the problem
+    -- Can be string like "~/template.cpp" (interpreted as a file path from which to copy content) or a
+    -- list of string like {"#include <bits/stdc++.h>", "using namespace std;", "int main() {", "}"}
+    -- Can also be a function returning either
+    -- getProblemTemplate = "~/template.cpp",
 
     -- Wether to store the test cases received from competitive-companion
     -- These are stored in 'data' stdpath (see :help stdpath)
