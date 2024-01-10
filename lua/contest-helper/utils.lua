@@ -2,6 +2,34 @@ local M = {}
 
 local extensionHome = vim.fn.stdpath("data") .. "/contest-helper.nvim"
 
+---@param output string[]
+---@param ignoreOutputPatterns? string[]
+---@return string[]
+local removeIgnoredPatterns = function(output, ignoreOutputPatterns)
+	if ignoreOutputPatterns == nil or #ignoreOutputPatterns == 0 then
+        return output
+	end
+	local patterns = {}
+	local filtered_output = {}
+	for _, pattern in ipairs(ignoreOutputPatterns) do
+		table.insert(patterns, vim.regex(pattern))
+	end
+	for _, line in ipairs(output) do
+		local keep = true
+		for _, pattern in ipairs(patterns) do
+			if pattern:match_str(line) then
+				keep = false
+				break
+			end
+		end
+
+		if keep then
+			table.insert(filtered_output, line)
+		end
+	end
+	return filtered_output
+end
+
 ---@param name string
 ---@return string
 M.getProblemDir = function(name)
@@ -51,6 +79,7 @@ M.trimLineList =
 			lines[i] = M.trimLine(lines[i], trimPreceedingWhitespace, trimFollowingWhitespace)
 		end
 
+        -- find the [l, r] that should be kept
 		if trimPrecedingBlankLines then
 			while l <= r and lines[l] == "" do
 				l = l + 1
@@ -62,12 +91,14 @@ M.trimLineList =
 			end
 		end
 
+        -- move entries to the left
 		if l ~= 1 then
 			for i = 0, r - l do
 				lines[i + 1] = lines[i + l]
 			end
 		end
 
+        -- delete leftover entries
 		for i = r - l + 2, #lines do
 			lines[i] = nil
 		end
@@ -77,8 +108,11 @@ M.trimLineList =
 
 ---@param answer string[]
 ---@param output string[]
+---@param ignoreOutputPatterns? string[]
 ---@return DiffResult
-M.createDiff = function(answer, output)
+M.createDiff = function(answer, output, ignoreOutputPatterns)
+    output = removeIgnoredPatterns(output, ignoreOutputPatterns)
+
 	local len1 = #answer
 	local len2 = #output
 

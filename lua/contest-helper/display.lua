@@ -99,7 +99,7 @@ M.displayResults =
 			testCaseErrors[tci] = trimLineList(testCaseErrors[tci] or {})
 			testCaseInputs[tci] = trimLineList(testCaseInputs[tci])
 
-			local diff = utils.createDiff(testCaseAnswers[tci], testCaseOutputs[tci])
+			local diff = utils.createDiff(testCaseAnswers[tci], testCaseOutputs[tci], config.options.ignoreOutputPatterns)
 			statuses[tci] = diff.status
 			if not diff.status then
 				passed = false

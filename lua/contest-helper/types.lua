@@ -67,6 +67,7 @@
 ---@field trimPrecedingBlankLines boolean
 ---@field trimPrecedingWhitespaces boolean
 ---@field seekToFailedTestCase boolean
+---@field ignoreOutputPatterns? string[]
 
 ---@alias SolutionTemplate string|string[]
 ---@alias RunResult integer[]

@@ -138,6 +138,12 @@ require("contest-helper").setup({
 
     -- (millisecond) how long to wait for each test case to be executed before timeout
     testCaseTimeout = 10000,
+
+	-- regex patterns to remove from output when matching it with expected answer
+    -- if any part of the line matches the regex, it will be removed
+	-- this can be used to ignore debug information from output
+    -- for example to remove lines starting with ">"
+    -- ignoreOutput = {"^>"},
 })
 ```
 
