@@ -36,6 +36,13 @@ M.displayResults =
 			vim.api.nvim_command("vertical 50 split")
 			resultWindow = vim.api.nvim_get_current_win()
 
+			-- Create highlight rules
+			if config.options.highlights then
+				for _, v in ipairs(config.options.highlights) do
+					vim.fn.matchadd(v.highlightGroup, v.pattern)
+				end
+			end
+
 			vim.api.nvim_win_set_buf(resultWindow, resultBufnr)
 			vim.api.nvim_buf_set_option(resultBufnr, "filetype", "runresult")
 			vim.cmd("setlocal nornu")
@@ -45,7 +52,6 @@ M.displayResults =
 		vim.api.nvim_buf_set_option(resultBufnr, "modifiable", true)
 		local nsid = vim.api.nvim_create_namespace("contest-helper")
 
-
 		---@param text? string[]
 		---@param hg_name? string
 		---@param show_virtual_linenr? boolean
@@ -54,9 +60,9 @@ M.displayResults =
 				return
 			end
 			local start = vim.api.nvim_buf_line_count(resultBufnr)
-            if start == 1 then -- remove empty space from top
-                start = 0
-            end
+			if start == 1 then -- remove empty space from top
+				start = 0
+			end
 			vim.api.nvim_buf_set_lines(resultBufnr, start, -1, false, text)
 			if hg_name then
 				for linenr = start, start + #text - 1 do
@@ -99,7 +105,11 @@ M.displayResults =
 			testCaseErrors[tci] = trimLineList(testCaseErrors[tci] or {})
 			testCaseInputs[tci] = trimLineList(testCaseInputs[tci])
 
-			local diff = utils.createDiff(testCaseAnswers[tci], testCaseOutputs[tci], config.options.ignoreOutputPatterns)
+			local diff = utils.createDiff(
+				testCaseAnswers[tci],
+				testCaseOutputs[tci],
+				config.options.ignoreOutputPatterns
+			)
 			statuses[tci] = diff.status
 			if not diff.status then
 				passed = false

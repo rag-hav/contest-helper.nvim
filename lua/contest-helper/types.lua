@@ -68,9 +68,15 @@
 ---@field trimPrecedingWhitespaces boolean
 ---@field seekToFailedTestCase boolean
 ---@field ignoreOutputPatterns? string[]
+---@field highlights? Highlight[]
 
 ---@alias SolutionTemplate string|string[]
 ---@alias RunResult integer[]
+
+
+---@class Highlight 
+---@field pattern string
+---@field highlightGroup string
 
 ---@class DiffResult
 ---@field status boolean
